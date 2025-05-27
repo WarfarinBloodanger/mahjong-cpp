@@ -35,4 +35,4 @@ jobs:
           name: ServerEXE
           path: |
             D:\a\mahjong-cpp\mahjong-cpp\build\src\server\Release\nanikiru.exe
-            D:\a\mahjong-cpp\mahjong-cpp\build\src\src\misc\Release\*.exe
+            D:\a\mahjong-cpp\mahjong-cpp\build\src\misc\shanten_table\Release\*.exe
