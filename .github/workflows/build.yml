@@ -28,19 +28,11 @@ jobs:
           cd build
           cmake --build . --config Release
 
-      # 3. 压缩整个构建目录
-      - name: Create Artifact Zip
-        run: |
-          # 进入构建目录
-          cd D:/a/mahjong-cpp/mahjong-cpp/
-          # 压缩所有文件（排除临时文件）
-          7z a -r ../artifact.zip * -xr!*.obj -xr!*.pdb -xr!*.ilk
-          # 显示压缩文件内容（调试用）
-          7z l ../artifact.zip
-
       # 4. 上传 ZIP 文件
       - name: Upload Artifact Zip
         uses: actions/upload-artifact@v4
         with:
-          name: project-artifact
-          path: artifact.zip
+          name: ServerEXE
+          path: |
+            D:\a\mahjong-cpp\mahjong-cpp\build\src\server\Release\nanikiru.exe
+            D:\a\mahjong-cpp\mahjong-cpp\build\src\src\misc\Release\*.exe
