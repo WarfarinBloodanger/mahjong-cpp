@@ -32,7 +32,7 @@ jobs:
       - name: Create Artifact Zip
         run: |
           # 进入构建目录
-          cd build
+          cd D:/a/mahjong-cpp/mahjong-cpp/
           # 压缩所有文件（排除临时文件）
           7z a -r ../artifact.zip * -xr!*.obj -xr!*.pdb -xr!*.ilk
           # 显示压缩文件内容（调试用）
