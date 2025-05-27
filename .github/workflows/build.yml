@@ -32,8 +32,7 @@ jobs:
             boost-beast:x64-windows \
             boost-dll:x64-windows \
             boost-graph:x64-windows \
-            boost-asio:x64-windows \
-            --binarycaching
+            boost-asio:x64-windows
 
       # 3. 配置环境变量
       - name: Set env vars
