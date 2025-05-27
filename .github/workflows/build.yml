@@ -1,0 +1,31 @@
+name: Windows Build with MSVC
+on: [push, pull_request]  # 触发条件：代码推送或PR时自动运行
+
+jobs:
+     build:
+       runs-on: windows-latest  # GitHub 提供的 Windows 环境（预装 VS2022 和 CMake）
+
+       steps:
+         # 1. 检出代码
+         - uses: actions/checkout@v4
+
+         # 2. 配置 CMake（生成 VS2022 解决方案）
+         - name: Configure CMake
+           run: |
+             mkdir build
+             cd build
+             cmake .. -G "Visual Studio 17 2022" -A x64
+
+         # 3. 编译 Release 版本
+         - name: Build
+           run: |
+             cd build
+             cmake --build . --config Release
+
+         # （可选）4. 上传构建产物
+         - name: Upload Artifacts
+           if: success()  # 仅在构建成功时上传
+           uses: actions/upload-artifact@v3
+           with:
+             name: binaries
+             path: build/Release/*.exe  # 替换为你的实际输出路径
