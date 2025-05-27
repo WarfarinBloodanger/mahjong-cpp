@@ -94,18 +94,7 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 endif()
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/config/ DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 
-# server program
-if(BUILD_SERVER)
-  add_subdirectory(src/server)
-endif()
-
-# test programs
-if(BUILD_TEST)
-  add_subdirectory(src/test)
-  add_subdirectory(src/misc/shanten_table)
-endif()
-
-# sample programs
-if(BUILD_SAMPLES)
-  add_subdirectory(src/samples)
-endif()
+add_subdirectory(src/server)
+add_subdirectory(src/test)
+add_subdirectory(src/misc/shanten_table)
+add_subdirectory(src/samples)
