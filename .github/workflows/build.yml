@@ -15,7 +15,7 @@ jobs:
           echo "VCPKG_ROOT=$env:GITHUB_WORKSPACE\vcpkg" >> $env:GITHUB_ENV
 
       - name: Install Boost
-        run: ./vcpkg/vcpkg install boost-filesystem:x64-windows boost-system:x64-windows
+        run: ./vcpkg/vcpkg install boost-filesystem:x64-windows boost-system:x64-windows boost-dll:x64-windows boost-graph:x64-windows
 
       - name: Configure CMake
         run: |
