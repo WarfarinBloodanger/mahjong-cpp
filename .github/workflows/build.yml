@@ -23,9 +23,3 @@ jobs:
              cmake --build . --config Release
 
          # （可选）4. 上传构建产物
-         - name: Upload Artifacts
-           if: success()  # 仅在构建成功时上传
-           uses: actions/upload-artifact@v3
-           with:
-             name: binaries
-             path: build/Release/*.exe  # 替换为你的实际输出路径
