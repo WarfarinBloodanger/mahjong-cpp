@@ -1,35 +1,40 @@
-name: Windows Build with Boost
+name: Build Boost Libraries
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:  # 允许手动触发
+  push:
+    branches: [ main ]  # 可根据需要调整触发条件
 
 jobs:
-  build:
-    runs-on: windows-latest
+  build-boost:
+    runs-on: windows-latest  # 使用 Windows 环境
+
     steps:
-      - uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up vcpkg
-        run: |
-          git clone https://github.com/microsoft/vcpkg
-          ./vcpkg/bootstrap-vcpkg.bat
-          echo "VCPKG_ROOT=$env:GITHUB_WORKSPACE\vcpkg" >> $env:GITHUB_ENV
+    - name: Install Visual Studio 2022 (with MSVC)
+      uses: microsoft/setup-msbuild@v1
+      with:
+        vs-version: '17.0'  # VS 2022
 
-      - name: Install Boost
-        run: ./vcpkg/vcpkg install boost-filesystem:x64-windows boost-system:x64-windows boost-beast:x64-windows boost-dll:x64-windows boost-graph:x64-windows boost-asio:x64-windows
+    - name: Download Boost
+      run: |
+        # 下载 Boost 1.88（替换为你的版本）
+        $boostVersion = "1.88.0"
+        $boostUrl = "https://boostorg.jfrog.io/artifactory/main/release/$boostVersion/source/boost_$($boostVersion.Replace('.','_')).zip"
+        Invoke-WebRequest -Uri $boostUrl -OutFile boost.zip
+        Expand-Archive -Path boost.zip -DestinationPath .
+        Rename-Item "boost_$($boostVersion.Replace('.','_'))" boost
 
-      - name: Configure CMake
-        run: |
-          mkdir build
-          cd build
-          cmake .. -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"
+    - name: Build Boost (动态库)
+      run: |
+        cd boost
+        .\bootstrap.bat
+        .\b2 toolset=msvc-14.3 architecture=x64 address-model=64 --with-filesystem --with-system variant=release link=shared
 
-      - name: Build
-        run: |
-          cd build
-          cmake --build . --config Release
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: nanikiru
-          path: D:\a\mahjong-cpp\mahjong-cpp\build\src\server\Release\*.exe
+    - name: Upload Boost DLLs as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: boost-dlls
+        path: boost/stage/lib/*.dll  # 上传所有生成的 DLL
