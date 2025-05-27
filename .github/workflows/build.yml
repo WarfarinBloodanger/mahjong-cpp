@@ -1,4 +1,4 @@
-name: Windows Build with Boost (Cached)
+name: Windows Build with Boost
 
 on: [push, pull_request]
 
@@ -8,39 +8,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 1. 设置 vcpkg 缓存
-      - name: Cache vcpkg
-        id: cache-vcpkg
-        uses: actions/cache@v3
-        with:
-          path: |
-            vcpkg/installed
-            vcpkg/packages
-          key: ${{ runner.os }}-vcpkg-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-vcpkg-
-
-      # 2. 安装 Boost（仅在缓存未命中时执行）
-      - name: Install Boost
-        if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+      - name: Set up vcpkg
         run: |
           git clone https://github.com/microsoft/vcpkg
           ./vcpkg/bootstrap-vcpkg.bat
-          ./vcpkg/vcpkg install \
-            boost-filesystem:x64-windows \
-            boost-system:x64-windows \
-            boost-beast:x64-windows \
-            boost-dll:x64-windows \
-            boost-graph:x64-windows \
-            boost-asio:x64-windows
-
-      # 3. 配置环境变量
-      - name: Set env vars
-        run: |
           echo "VCPKG_ROOT=$env:GITHUB_WORKSPACE\vcpkg" >> $env:GITHUB_ENV
-          echo "PATH=$env:GITHUB_WORKSPACE\vcpkg;$env:PATH" >> $env:GITHUB_ENV
 
-      # 4. 构建项目
+      - name: Install Boost
+        run: ./vcpkg/vcpkg install boost-filesystem:x64-windows boost-system:x64-windows boost-beast:x64-windows boost-dll:x64-windows boost-graph:x64-windows boost-asio:x64-windows
+
       - name: Configure CMake
         run: |
           mkdir build
@@ -52,9 +28,8 @@ jobs:
           cd build
           cmake --build . --config Release
 
-      # 5. 精确上传 nanikiru.exe
-      - name: Upload Executable
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: nanikiru-exe
-          path: D:\a\mahjong-cpp\mahjong-cpp\build\src\server\Release\nanikiru.exe #果需要上传依赖的 DLL
+          name: nanikiru
+          path: D:\a\mahjong-cpp\mahjong-cpp\build\src\server\Release\*.exe
