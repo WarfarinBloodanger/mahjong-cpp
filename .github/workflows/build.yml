@@ -34,7 +34,7 @@ jobs:
         .\b2 toolset=msvc-14.3 architecture=x64 address-model=64 --with-filesystem --with-system variant=release link=shared
 
     - name: Upload Boost DLLs as Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: boost-dlls
         path: boost/stage/lib/*.dll  # 上传所有生成的 DLL
